@@ -1,0 +1,22 @@
+<article>
+  <header><h2>Frage: {{question().id}}</h2></header>
+  <h2>{{question().questionText}}</h2>
+
+  @if (answers().length > 0) {
+    <form [formRoot]="answerForm" >
+      @for (a of answers(); track (a.Id ?? a.id)){
+        <label>
+          {{ a.answerText ?? a.AnswerText }}
+        </label>
+      }
+      <label for="answerText">Answer</label>
+      <input type="text" id="answerText"
+             [formField]="answerForm.answerText"
+      />
+      <button type="submit">Antwort abgeben</button>
+    </form>
+  } @else {
+    <p style="color: red;">Keine Antwortoptionen für diese Frage gefunden!</p>
+  }
+</article>
+<div>@if (submittedResult) { {{ submittedResult.answerText}} }</div>

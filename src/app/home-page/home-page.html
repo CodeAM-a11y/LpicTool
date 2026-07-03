@@ -1,0 +1,9 @@
+<h1>Möchtest du Üben oder eine Lernsimulation durchführen?</h1>
+<form [formRoot]="examForm">
+  <select [formField]="examForm.examId">
+    <option value="0">Wähle eine Lpic Prüfung</option>
+    <option value="2">Lpic 1</option>
+    <option value="7">Lpic 2</option>
+  </select>
+  <button type="submit">Weiter</button>
+</form>
