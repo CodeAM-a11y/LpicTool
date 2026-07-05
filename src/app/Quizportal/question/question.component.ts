@@ -21,20 +21,6 @@ export class question {
   //Die Antwort vom Form Signal wird derzeit hier abgespeichert
   protected submittedResult: GivenAnswerInter | null = null;
 
-  //KI generierte Variable eventuell entfernen, nachdem REST API korrigiert wurde
-  protected answers = computed<AnswerInter[]>(() => {
-    const q = this.question();
-    const arr = q?.answers ?? [];
-    try {
-      if (typeof window !== 'undefined') {
-        const key = q ? `${q.examId}-${q.id}` : 'no-question';
-        console.debug('[question] key=', key, 'answersCount=', arr.length, 'answers=', arr);
-      }
-    } catch (e) {}
-    return arr;
-  });
-  //Ende
-
   //Hier startet Signal Form um Antworten abgeben zu können
   readonly #answerFI = signal<GivenAnswerInter>({
     examId: this.question[SIGNAL].value.examId,

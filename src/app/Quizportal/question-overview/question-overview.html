@@ -1,7 +1,7 @@
 <section>
   <div>Funktioniert</div>
   <ul>
-    @for (item of questionsWithAnswers(); track item.uniqueId) {
+    @for (item of questionsWithAnswers.value(); track item.id) {
       <li>
         <a>
           <app-question [question]="item"/>

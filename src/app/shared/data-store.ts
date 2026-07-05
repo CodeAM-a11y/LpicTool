@@ -14,10 +14,22 @@ export class DataStore {
     });
   }
 
-  getQuestionByexamId(examid:()=>string):HttpResourceRef<QuestionInter[]>{
-    return httpResource<QuestionInter[]>(()=>({url:`${this.#apiUrl}/api/question/${examid()}` }),{
-      defaultValue:[],
-    });
+  getQuestionsAnswers(): ResourceRef<QuestionInter[]> {
+    return httpResource<QuestionInter[]>(
+      () => ({ url: `${this.#apiUrl}/api/Question/GetQuestionsAnswers` }),
+      {
+        defaultValue: [],
+      },
+    );
+  }
+
+  getQuestionByexamId(examid: () => string): HttpResourceRef<QuestionInter[]> {
+    return httpResource<QuestionInter[]>(
+      () => ({ url: `${this.#apiUrl}/api/question/${examid()}` }),
+      {
+        defaultValue: [],
+      },
+    );
   }
 
   getAllAnswers(): ResourceRef<AnswerInter[]> {
@@ -26,10 +38,15 @@ export class DataStore {
     });
   }
 
-  getAnswersForQuestion(examid: () => string, questionId: () => string): HttpResourceRef<AnswerInter[]>{
+  getAnswersForQuestion(
+    examid: () => string,
+    questionId: () => string,
+  ): HttpResourceRef<AnswerInter[]> {
     return httpResource<AnswerInter[]>(
-      () => `${this.#apiUrl}/api/answer/${examid()}/${questionId()}`,{defaultValue:[]});
-  };
+      () => `${this.#apiUrl}/api/answer/${examid()}/${questionId()}`,
+      { defaultValue: [] },
+    );
+  }
 
   getSingleAnswer(
     examid: () => string,
