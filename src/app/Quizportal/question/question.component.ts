@@ -5,7 +5,7 @@ import { AnswerInter } from '../../shared/answer.inter';
 import { GivenAnswerInter } from '../../shared/given-answer.inter';
 import { SIGNAL } from '@angular/core/primitives/signals';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
-import { async } from 'rxjs';
+import {TempDataStore} from '../../shared/temp-data-store';
 
 @Component({
   selector: 'app-question',
@@ -14,23 +14,31 @@ import { async } from 'rxjs';
   styleUrl: './question.component.css',
 })
 export class question {
-  //In diesem Block wird die Variable "answer" befüllt damit man es an die Antwort Komponenten weitergeben kann
   #dataStore = inject(DataStore);
-  //Die Frage plus korrekte Antworten werden hier gespeichert
+  #tempDataStore=inject(TempDataStore);
   question = input.required<QuestionInter>();
-  //Die Antwort vom Form Signal wird derzeit hier abgespeichert
   protected submittedResult: GivenAnswerInter | null = null;
 
-  //Hier startet Signal Form um Antworten abgeben zu können
   readonly #answerFI = signal<GivenAnswerInter>({
     examId: this.question[SIGNAL].value.examId,
     questionId: this.question[SIGNAL].value.id,
     answerText: '',
+    ids: []
   });
+
   protected readonly answerForm = form(this.#answerFI, {
     submission: {
       action: async (field) => {
         this.submittedResult = field().value();
+
+        const newGivenAnswer: GivenAnswerInter = {
+          examId: field().value().examId,
+          questionId: field().value().questionId,
+          answerText: this.question[SIGNAL].value.type === 'fi' ? field().value().answerText : '',
+          ids: this.question[SIGNAL].value.type !== 'fi' ? (field().value() as any).ids ?? [] : []
+        };
+
+        this.#tempDataStore.pushAnswers(newGivenAnswer);
         if (this.submittedResult != null) return;
         return { kind: 'serverError', message: 'Failed to submit form' };
       },
@@ -39,6 +47,5 @@ export class question {
 
   handleAnswer(answerId: number) {
     console.log('Eltern-Komponente hat die Antwort erhalten:', answerId);
-    // Hier können Sie die Antwort speichern oder zur nächsten Frage springen
   }
 }

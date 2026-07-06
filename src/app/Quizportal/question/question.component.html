@@ -1,6 +1,8 @@
 <article>
   <header><h2>Frage: {{question().id}}</h2></header>
   <h2>{{question().questionText}}</h2>
+  @switch (question().type){
+    @case ('fi'){
 
     <form [formRoot]="answerForm" >
       @for (a of question().answers; track (a.id)){
@@ -14,5 +16,38 @@
       />
       <button type="submit">Antwort abgeben</button>
     </form>
+    }
+    @case ('sc'){
+      <form [formRoot]="answerForm">
+
+      @for (a of question().answers;track (a.id)){
+      <label>
+        <input type="radio" [formField]="answerForm.ids" [value]="a.id"/>
+        {{a.answerText}}
+      </label>
+      }
+        <button type="submit">Antwort abgeben</button>
+      </form>
+    }
+    @case ('mc'){
+      <form [formRoot]="answerForm">
+
+        @for (a of question().answers;track (a.id)){
+          <label>
+            <input type="checkbox" [formField]="answerForm.ids"  [value]="a.id"/>
+            {{a.answerText}}
+          </label>
+        }
+        <button type="submit">Antwort abgeben</button>
+      </form>
+    }
+  }
 </article>
-<div>@if (submittedResult) { {{ submittedResult.answerText}} }</div>
+<div>@if (submittedResult) {
+  @if (submittedResult.answerText && submittedResult.answerText !== '') {
+    {{ submittedResult.answerText }}
+  } @else {
+    {{ submittedResult.ids }}
+  }
+}</div>
+

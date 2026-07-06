@@ -1,27 +1,28 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { GivenAnswerInter } from '../../shared/given-answer.inter';
 import { DataStore } from '../../shared/data-store';
 import { question } from '../question/question.component';
-import { QuestionInter } from '../../shared/question.inter';
-import { AnswerInter } from '../../shared/answer.inter';
-import {TempDataStore} from '../../shared/temp-data-store';
-import { ChoosenExamInter } from '../../shared/choosen-exam.inter';
-import { ActivatedRoute } from '@angular/router';
+import { TempDataStore } from '../../shared/temp-data-store';
+import { ExamFinish } from '../exam-finish/exam-finish';
+import { SIGNAL } from '@angular/core/primitives/signals';
 
 @Component({
   selector: 'app-question-overview',
-  imports: [question],
+  imports: [question, ExamFinish],
   templateUrl: './question-overview.html',
   styleUrl: './question-overview.css',
 })
 export class QuestionOverview {
   #dataStore = inject(DataStore);
   #tempDataStore = inject(TempDataStore);
-  readonly examId = this.#tempDataStore.returnExamInter();
-  protected givenAnswers = signal<GivenAnswerInter[]>([]);
-  protected questions = this.#dataStore.getQuestionByexamId(() => this.examId.examId);
-  protected allAnswers = this.#dataStore.getAllAnswers();
+  readonly examId = signal<string>(this.#tempDataStore.returnExamInter().examId);
+  //abgegebene Antworten zum Anzeigen
+  protected givenAnswers = signal<GivenAnswerInter[]>(this.#tempDataStore.givenAnwers);
 
-  // questionsWithAnswers enthält jetzt eine zusätzliche uniqueId (string) kombiniert aus examId und id
-  protected questionsWithAnswers = this.#dataStore.getQuestionsAnswers();
+  protected questionsWithAnswers = this.#dataStore.getQuestionsAnswers(() => this.examId());
+
+  protected currentQuestionIndex = signal(0);
+  protected inputQuestion = computed(() =>
+    this.questionsWithAnswers.value().at(this.currentQuestionIndex().valueOf()),
+  );
 }

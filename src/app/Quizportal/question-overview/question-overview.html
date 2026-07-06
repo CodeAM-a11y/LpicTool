@@ -1,11 +1,29 @@
 <section>
   <div>Funktioniert</div>
+        <a>
+          @if (inputQuestion();as question){
+            <app-question [question]="question"/>
+          }
+        </a>
+  <button (click)="currentQuestionIndex.update(value=>value>0?value-1:value)">Zurück</button>
+  <button (click)="currentQuestionIndex.update(value=>value<120?value+1:value)">Weiter</button>
+  @if (currentQuestionIndex()===120){
+    <button>Prüfung abgeben</button>
+    <app-exam-finish [givenAnswers]="givenAnswers()"/>
+  }
+  <div></div>
+</section>
+<section>
+  <div>Funktioniert</div>
   <ul>
-    @for (item of questionsWithAnswers.value(); track item.id) {
+    @for (item of givenAnswers(); track currentQuestionIndex) {
       <li>
         <a>
-          <app-question [question]="item"/>
+          <{{ item.answerText }}/>
         </a>
+        <a>{{item.ids}}</a>
+        <a>{{item.questionId}}</a>
+        <a>{{item.examId}}</a>
       </li>
     }
   </ul>

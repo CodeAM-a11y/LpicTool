@@ -14,9 +14,9 @@ export class DataStore {
     });
   }
 
-  getQuestionsAnswers(): ResourceRef<QuestionInter[]> {
+  getQuestionsAnswers(examid:()=>string): ResourceRef<QuestionInter[]> {
     return httpResource<QuestionInter[]>(
-      () => ({ url: `${this.#apiUrl}/api/Question/GetQuestionsAnswers` }),
+      () => ({ url: `${this.#apiUrl}/api/Question/GetQuestionsAnswers/${examid()}` }),
       {
         defaultValue: [],
       },
