@@ -7,7 +7,7 @@ import {TempDataStore} from '../shared/temp-data-store';
 
 @Component({
   selector: 'app-home-page',
-  imports: [RouterLink, FormField, ReactiveFormsModule, FormRoot],
+  imports: [FormField, ReactiveFormsModule, FormRoot],
   templateUrl: './home-page.html',
   styleUrl: './home-page.css',
 })

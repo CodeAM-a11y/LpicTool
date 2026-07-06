@@ -4,7 +4,7 @@ import {question} from './Quizportal/question/question.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, question, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

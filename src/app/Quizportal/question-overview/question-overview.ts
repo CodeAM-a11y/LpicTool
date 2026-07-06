@@ -4,7 +4,6 @@ import { DataStore } from '../../shared/data-store';
 import { question } from '../question/question.component';
 import { TempDataStore } from '../../shared/temp-data-store';
 import { ExamFinish } from '../exam-finish/exam-finish';
-import { SIGNAL } from '@angular/core/primitives/signals';
 
 @Component({
   selector: 'app-question-overview',
@@ -23,6 +22,6 @@ export class QuestionOverview {
 
   protected currentQuestionIndex = signal(0);
   protected inputQuestion = computed(() =>
-    this.questionsWithAnswers.value().at(this.currentQuestionIndex().valueOf()),
+    this.questionsWithAnswers.value().at(this.currentQuestionIndex()),
   );
 }

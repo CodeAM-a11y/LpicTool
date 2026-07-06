@@ -1,9 +1,6 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { QuestionInter } from '../../shared/question.inter';
-import { DataStore } from '../../shared/data-store';
-import { AnswerInter } from '../../shared/answer.inter';
 import { GivenAnswerInter } from '../../shared/given-answer.inter';
-import { SIGNAL } from '@angular/core/primitives/signals';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
 import {TempDataStore} from '../../shared/temp-data-store';
 
@@ -14,31 +11,53 @@ import {TempDataStore} from '../../shared/temp-data-store';
   styleUrl: './question.component.css',
 })
 export class question {
-  #dataStore = inject(DataStore);
-  #tempDataStore=inject(TempDataStore);
+  #tempDataStore = inject(TempDataStore);
   question = input.required<QuestionInter>();
   protected submittedResult: GivenAnswerInter | null = null;
 
-  readonly #answerFI = signal<GivenAnswerInter>({
-    examId: this.question[SIGNAL].value.examId,
-    questionId: this.question[SIGNAL].value.id,
+  protected readonly answerState = signal<GivenAnswerInter>({
+    examId: 0,
+    questionId: 0,
     answerText: '',
-    ids: []
+    ids: [],
   });
 
-  protected readonly answerForm = form(this.#answerFI, {
+  constructor() {
+    /**
+     * 2. Synchronisierung via Effect
+     * Sobald sich 'question()' ändert, wird dieser Block ausgeführt.
+     * Das stellt sicher, dass das Formular immer die IDs der aktuellen Frage hat.
+     */
+    effect(() => {
+      const q = this.question();
+      this.answerState.set({
+        examId: q.examId,
+        questionId: q.id,
+        answerText: '',
+        ids: [],
+      });
+
+      // Reset des Status bei einem Fragenwechsel
+      this.submittedResult = null;
+    });
+  }
+
+  protected readonly answerForm = form(this.answerState, {
     submission: {
       action: async (field) => {
-        this.submittedResult = field().value();
+        const formValue = field().value();
+        this.submittedResult = formValue;
 
         const newGivenAnswer: GivenAnswerInter = {
-          examId: field().value().examId,
-          questionId: field().value().questionId,
-          answerText: this.question[SIGNAL].value.type === 'fi' ? field().value().answerText : '',
-          ids: this.question[SIGNAL].value.type !== 'fi' ? (field().value() as any).ids ?? [] : []
+          examId: formValue.examId,
+          questionId: formValue.questionId,
+          // 3. Sauberer Zugriff auf den Typ via this.question()
+          answerText: this.question().type === 'fi' ? formValue.answerText : '',
+          ids: this.question().type !== 'fi' ? formValue.ids : [],
         };
 
         this.#tempDataStore.pushAnswers(newGivenAnswer);
+
         if (this.submittedResult != null) return;
         return { kind: 'serverError', message: 'Failed to submit form' };
       },
@@ -47,5 +66,19 @@ export class question {
 
   handleAnswer(answerId: number) {
     console.log('Eltern-Komponente hat die Antwort erhalten:', answerId);
+  }
+//KI generiert
+  protected updateSingleChoice(id: number) {
+    this.answerState.update((s) => ({ ...s, ids: [id] }));
+  }
+
+  protected updateMultiChoice(id: number, event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.answerState.update((s) => {
+      const ids = checked
+        ? [...s.ids.filter((i) => i !== id), id]
+        : s.ids.filter((i) => i !== id);
+      return { ...s, ids };
+    });
   }
 }

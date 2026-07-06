@@ -22,7 +22,10 @@
 
       @for (a of question().answers;track (a.id)){
       <label>
-        <input type="radio" [formField]="answerForm.ids" [value]="a.id"/>
+        <input type="radio" 
+               name="options"
+               [checked]="answerState().ids.includes(a.id)"
+               (change)="updateSingleChoice(a.id)"/>
         {{a.answerText}}
       </label>
       }
@@ -34,7 +37,9 @@
 
         @for (a of question().answers;track (a.id)){
           <label>
-            <input type="checkbox" [formField]="answerForm.ids"  [value]="a.id"/>
+            <input type="checkbox" 
+                   [checked]="answerState().ids.includes(a.id)"
+                   (change)="updateMultiChoice(a.id, $event)"/>
             {{a.answerText}}
           </label>
         }

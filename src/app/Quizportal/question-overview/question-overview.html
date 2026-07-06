@@ -16,10 +16,10 @@
 <section>
   <div>Funktioniert</div>
   <ul>
-    @for (item of givenAnswers(); track currentQuestionIndex) {
+    @for (item of givenAnswers(); track item.questionId) {
       <li>
         <a>
-          <{{ item.answerText }}/>
+          {{ item.answerText }}
         </a>
         <a>{{item.ids}}</a>
         <a>{{item.questionId}}</a>
