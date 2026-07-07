@@ -19,14 +19,18 @@ export class question {
     if(this.question().type==='fi'){
     //sucht nach einem Element das der eingebenen Antwort entspricht
     if(this.question().answers.find(answer=>answer.answerText===this.submittedResult()?.answerText)){
+      this.#tempDataStore.insertcorrectOrNot({questionId:this.question().id,correct:true});
       return true;
     }
+      this.#tempDataStore.insertcorrectOrNot({ questionId: this.question().id, correct: false });
     return false;
     }
     else if(this.question().type==='sc'){
       if(this.submittedResult()?.ids.every(id=>this.question().answers.find(answer=>answer.id===id)?.isCorrect)){
+        this.#tempDataStore.insertcorrectOrNot({ questionId: this.question().id, correct: true });
         return true;
       }
+      this.#tempDataStore.insertcorrectOrNot({ questionId: this.question().id, correct: false });
       return false;
     }
     //für 'mc'
@@ -35,8 +39,10 @@ export class question {
       let correctIds=this.question().answers.filter(answer=>answer.isCorrect).map(answer=>answer.id);
       //Geht alle korrekten Ids durch und prüft, ob alle in den eingegebenen Ids vorkommen, ansonsten gibt every false zurück
       if(correctIds.every((id)=>this.submittedResult()?.ids.includes(id))){
+        this.#tempDataStore.insertcorrectOrNot({ questionId: this.question().id, correct: true });
         return true;
       }
+      this.#tempDataStore.insertcorrectOrNot({ questionId: this.question().id, correct: false });
       return false;
     }
   });

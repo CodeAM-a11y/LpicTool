@@ -1,9 +1,11 @@
 <section>
   <ul>
-    @for (item of checkedAnswers;track $index){
+    @for (item of checkedAnswers();track $index){
       <li>
-        {{item.valueOf()}}
+        <div>{{item.questionId}}</div>
+        <div>{{item.correct}}</div>
       </li>
     }
   </ul>
   </section>
+<div><button (click)="finishExam()">Finish Exam</button></div>

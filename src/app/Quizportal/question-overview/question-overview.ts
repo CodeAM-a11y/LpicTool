@@ -24,4 +24,5 @@ export class QuestionOverview {
   protected inputQuestion = computed(() =>
     this.questionsWithAnswers.value().at(this.currentQuestionIndex()),
   );
+  protected checkedAnswers=this.#tempDataStore.arrayCorrectOrNot;
 }
