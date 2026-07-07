@@ -9,7 +9,7 @@
   <button (click)="currentQuestionIndex.update(value=>value<120?value+1:value)">Weiter</button>
   @if (currentQuestionIndex()===120){
     <button>Prüfung abgeben</button>
-    <app-exam-finish [givenAnswers]="givenAnswers()"/>
+    <app-exam-finish [givenAnswers]="givenAnswers()" [corrextAnswers]="questionsWithAnswers.value()"/>
   }
   <div></div>
 </section>

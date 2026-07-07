@@ -13,7 +13,33 @@ import {TempDataStore} from '../../shared/temp-data-store';
 export class question {
   #tempDataStore = inject(TempDataStore);
   question = input.required<QuestionInter>();
-  protected submittedResult: GivenAnswerInter | null = null;
+  protected submittedResult=signal<GivenAnswerInter | null>(null);
+  //Computed Funktion die automatisch ausgelöst wird wenn Antwort eingeben wird, ermittelt ob Antwort korrekt ist
+  protected answerChecked=computed(()=>{
+    if(this.question().type==='fi'){
+    //sucht nach einem Element das der eingebenen Antwort entspricht
+    if(this.question().answers.find(answer=>answer.answerText===this.submittedResult()?.answerText)){
+      return true;
+    }
+    return false;
+    }
+    else if(this.question().type==='sc'){
+      if(this.submittedResult()?.ids.every(id=>this.question().answers.find(answer=>answer.id===id)?.isCorrect)){
+        return true;
+      }
+      return false;
+    }
+    //für 'mc'
+    else{
+      //array mit allen Ids der Antworten die true sind
+      let correctIds=this.question().answers.filter(answer=>answer.isCorrect).map(answer=>answer.id);
+      //Geht alle korrekten Ids durch und prüft, ob alle in den eingegebenen Ids vorkommen, ansonsten gibt every false zurück
+      if(correctIds.every((id)=>this.submittedResult()?.ids.includes(id))){
+        return true;
+      }
+      return false;
+    }
+  });
 
   protected readonly answerState = signal<GivenAnswerInter>({
     examId: 0,
@@ -23,11 +49,7 @@ export class question {
   });
 
   constructor() {
-    /**
-     * 2. Synchronisierung via Effect
-     * Sobald sich 'question()' ändert, wird dieser Block ausgeführt.
-     * Das stellt sicher, dass das Formular immer die IDs der aktuellen Frage hat.
-     */
+    //Consturctor ist wichtig damit Question immer neu belegt wird für Signal form
     effect(() => {
       const q = this.question();
       this.answerState.set({
@@ -38,7 +60,7 @@ export class question {
       });
 
       // Reset des Status bei einem Fragenwechsel
-      this.submittedResult = null;
+      this.submittedResult.set(null);
     });
   }
 
@@ -46,24 +68,37 @@ export class question {
     submission: {
       action: async (field) => {
         const formValue = field().value();
-        this.submittedResult = formValue;
+        this.submittedResult.set(formValue);
 
         const newGivenAnswer: GivenAnswerInter = {
           examId: formValue.examId,
           questionId: formValue.questionId,
-          // 3. Sauberer Zugriff auf den Typ via this.question()
+
           answerText: this.question().type === 'fi' ? formValue.answerText : '',
           ids: this.question().type !== 'fi' ? formValue.ids : [],
         };
 
-        this.#tempDataStore.pushAnswers(newGivenAnswer);
+        const foundAnswer=this.#tempDataStore.givenAnwers.
+        find((b)=>b.questionId===newGivenAnswer.questionId&&b.examId===newGivenAnswer.examId);
 
-        if (this.submittedResult != null) return;
+        //Hier wird geprüft ob die Antwort bereits  abgegeben wurde eventuell wird die Antwort gelöscht damit eine neue gegeben werden kann
+        if(!foundAnswer){
+
+        this.#tempDataStore.pushAnswers(newGivenAnswer);
+        }
+        else {
+          const index = this.#tempDataStore.givenAnwers.indexOf(foundAnswer);
+          if(index > -1) {
+            this.#tempDataStore.givenAnwers.splice(index, 1);
+          }
+          this.#tempDataStore.pushAnswers(newGivenAnswer);
+        }
+
+        if (this.submittedResult() != null) return;
         return { kind: 'serverError', message: 'Failed to submit form' };
       },
     },
   });
-
   handleAnswer(answerId: number) {
     console.log('Eltern-Komponente hat die Antwort erhalten:', answerId);
   }
