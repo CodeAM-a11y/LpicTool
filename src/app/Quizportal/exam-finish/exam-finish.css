@@ -1,0 +1,70 @@
+.pixel-finish-container {
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 2rem;
+  border: 4px solid #991b1b;
+  max-width: 42rem;
+  margin: 2rem auto;
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+  font-family: 'Press Start 2P', monospace;
+}
+
+.pixel-finish-header {
+  border-bottom: 4px solid #dc2626;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  text-align: center;
+}
+
+.pixel-finish-title {
+  color: #dc2626;
+  font-size: 1.2rem;
+}
+
+.pixel-result-list {
+  list-style: none;
+  padding: 0;
+  max-height: 25rem;
+  overflow-y: auto;
+  margin-bottom: 2rem;
+}
+
+.pixel-result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border: 2px solid transparent;
+  margin-bottom: 0.5rem;
+  background-color: rgba(220, 38, 38, 0.1);
+  font-size: 0.8rem;
+}
+
+.pixel-result-item.correct {
+  color: #4ade80; /* Grün für richtig */
+  border-color: #166534;
+}
+
+.pixel-result-item.incorrect {
+  color: #dc2626; /* Rot für falsch */
+  border-color: #991b1b;
+}
+
+.pixel-question-id {
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.pixel-action-area {
+  text-align: center;
+}
+
+/* Scrollbar im Pixel-Look */
+.pixel-result-list::-webkit-scrollbar {
+  width: 8px;
+}
+.pixel-result-list::-webkit-scrollbar-track {
+  background: #000;
+}
+.pixel-result-list::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border: 2px solid #991b1b;
+}

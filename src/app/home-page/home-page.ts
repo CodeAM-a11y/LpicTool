@@ -4,6 +4,8 @@ import {ChoosenExamInter} from '../shared/choosen-exam.inter';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
 import { ReactiveFormsModule } from '@angular/forms';
 import {TempDataStore} from '../shared/temp-data-store';
+import {ExerciseOptModelInterface} from '../shared/exercise-opt-model.interface';
+import { async } from 'rxjs';
 
 @Component({
   selector: 'app-home-page',
@@ -14,6 +16,7 @@ import {TempDataStore} from '../shared/temp-data-store';
 export class HomePage {
   #tempDataStore=inject(TempDataStore);
   protected choosenExamInter: ChoosenExamInter | null = null;
+  protected choosenOptions:ExerciseOptModelInterface|null=null;
   #router = inject(Router);
 
   //Hier startet Signal Form zum Auswählen der Lpic Fragen.
@@ -34,4 +37,20 @@ export class HomePage {
       },
     },
   });
+
+  //Hier startet Code für Übungsmodus
+  readonly #exerciseModel=signal<ExerciseOptModelInterface>({
+    howManyQuestions:0,
+    questionsShuffled:false,
+    answersShuffled:false,
+    examId:''
+  });
+
+  protected readonly exerciseForm=form(this.#exerciseModel,{
+    submission:{
+      action:async (field)=>{
+
+      }
+    }
+  })
 }

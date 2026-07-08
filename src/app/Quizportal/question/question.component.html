@@ -1,59 +1,47 @@
-<article>
-  <header><h2>Frage: {{question().id}}</h2></header>
-  <h2>{{question().questionText}}</h2>
+<article class="pixel-quiz-container">
+  <header class="pixel-quiz-header">
+    <h2 class="pixel-question-id">Frage: {{question().id}}</h2>
+  </header>
+  <h2 class="pixel-question-text">{{question().questionText}}</h2>
+
   @switch (question().type){
     @case ('fi'){
+      <form [formRoot]="answerForm" class="pixel-form">
 
-    <form [formRoot]="answerForm" >
-      @for (a of question().answers; track (a.id)){
-        <label>
-          {{ a.answerText }}
-        </label>
-      }
-      <label for="answerText">Answer</label>
-      <input type="text" id="answerText"
-             [formField]="answerForm.answerText"
-      />
-      <button type="submit">Antwort abgeben</button>
-    </form>
+        <label for="answerText" class="pixel-label">Answer</label>
+        <input type="text" id="answerText"
+               [formField]="answerForm.answerText"
+               class="pixel-input"
+        />
+        <button type="submit" class="pixel-btn-submit">Antwort abgeben</button>
+      </form>
     }
     @case ('sc'){
-      <form [formRoot]="answerForm">
-
-      @for (a of question().answers;track (a.id)){
-      <label>
-        <input type="radio"
-               name="options"
-               [checked]="answerState().ids.includes(a.id)"
-               (change)="updateSingleChoice(a.id)"/>
-        {{a.answerText}}
-      </label>
-      }
-        <button type="submit">Antwort abgeben</button>
+      <form [formRoot]="answerForm" class="pixel-form">
+        @for (a of question().answers;track (a.id)){
+          <label class="pixel-label-radio">
+            <input type="radio"
+                   name="options"
+                   [checked]="answerState().ids.includes(a.id)"
+                   (change)="updateSingleChoice(a.id)"/>
+            {{a.answerText}}
+          </label>
+        }
+        <button type="submit" class="pixel-btn-submit">Antwort abgeben</button>
       </form>
     }
     @case ('mc'){
-      <form [formRoot]="answerForm">
-
+      <form [formRoot]="answerForm" class="pixel-form">
         @for (a of question().answers;track (a.id)){
-          <label>
+          <label class="pixel-label-checkbox">
             <input type="checkbox"
                    [checked]="answerState().ids.includes(a.id)"
                    (change)="updateMultiChoice(a.id, $event)"/>
             {{a.answerText}}
           </label>
         }
-        <button type="submit">Antwort abgeben</button>
+        <button type="submit" class="pixel-btn-submit">Antwort abgeben</button>
       </form>
     }
   }
 </article>
-<div>@if (submittedResult()) {
-  @if (submittedResult() && submittedResult()?.answerText !== '') {
-    {{ submittedResult()?.answerText }}
-  } @else {
-    {{ submittedResult()?.ids }}
-  }
-}</div>
-<div>{{answerChecked()}}</div>
-

@@ -2,6 +2,7 @@ import { Service } from '@angular/core';
 import {ChoosenExamInter} from './choosen-exam.inter';
 import { GivenAnswerInter } from './given-answer.inter';
 import { CorrectOrNotInter } from './correct-or-not.inter';
+import { ExerciseOptModelInterface } from './exercise-opt-model.interface';
 
 @Service()
 export class TempDataStore {
@@ -9,6 +10,13 @@ export class TempDataStore {
   givenAnwers: GivenAnswerInter[] = [];
   //Hier werden geprüfte Fragen abgespeichert
   arrayCorrectOrNot: CorrectOrNotInter[] = [];
+  //Hie werden die Optionen für den Übungsmodus abgespeichert
+  exerciseOptions:ExerciseOptModelInterface={
+    howManyQuestions:0,
+    questionsShuffled:false,
+    answersShuffled:false,
+    examId:'2'
+  }
 
   pushAnswers(GivenAnswer: GivenAnswerInter) {
     this.givenAnwers.push(GivenAnswer);
@@ -42,4 +50,10 @@ export class TempDataStore {
    clearArrayCorrectOrNot():void{
     this.arrayCorrectOrNot = [];
   }
+
+  //zum aufrufen von außerhalb zum speichern der Options
+  insertExerciseOpts(opts:ExerciseOptModelInterface):void{
+    this.exerciseOptions=opts;
+  }
+
 }

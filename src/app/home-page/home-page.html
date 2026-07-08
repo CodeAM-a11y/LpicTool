@@ -1,9 +1,35 @@
-<h1>Möchtest du Üben oder eine Lernsimulation durchführen?</h1>
-<form [formRoot]="examForm">
-  <select [formField]="examForm.examId">
-    <option value="0">Wähle eine Lpic Prüfung</option>
-    <option value="2">Lpic 1</option>
-    <option value="7">Lpic 2</option>
-  </select>
-  <button type="submit">Weiter</button>
-</form>
+<h1 class="pixel-heading">Möchtest du Üben oder eine Lernsimulation durchführen?</h1>
+<div class="pixel-main-wrapper">
+<div class="pixel-box">
+  <form [formRoot]="examForm" class="pixel-form">
+    <h2 class="pixel-heading">Lernsimulation</h2>
+    <select [formField]="examForm.examId" class="pixel-select">
+      <option value="0">Wähle eine Lpic Prüfung</option>
+      <option value="2">Lpic 1</option>
+      <option value="7">Lpic 2</option>
+    </select>
+    <button type="submit" class="pixel-btn-submit">Weiter</button>
+  </form>
+</div>
+<div class="pixel-box">
+  <form [formRoot]="exerciseForm" class="pixel-form">
+    <h2 class="pixel-heading">Übungsmodus</h2>
+    <label class="pixel-label-checkbox">Antworten gemischt?
+    <input type="checkbox" [formField]="exerciseForm.answersShuffled" class="pixel-select"/>
+    </label>
+    <label class="pixel-label-checkbox">Fragen gemischt?
+      <input type="checkbox" [formField]="exerciseForm.questionsShuffled" class="pixel-select"/>
+    </label>
+    <div>
+      <label class="pixel-label">Anzahl Fragen:</label>
+    <input type="number" [formField]="exerciseForm.howManyQuestions" class="pixel-input-number"/>
+    </div>
+    <select [formField]="exerciseForm.examId" class="pixel-select">
+      <option value="0">Wähle eine Lpic Prüfung</option>
+      <option value="2">Lpic 1</option>
+      <option value="7">Lpic 2</option>
+    </select>
+    <button type="submit" class="pixel-btn-submit">Weiter</button>
+  </form>
+</div>
+</div>

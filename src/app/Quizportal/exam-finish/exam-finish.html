@@ -1,11 +1,20 @@
-<section>
-  <ul>
-    @for (item of checkedAnswers();track $index){
-      <li>
-        <div>{{item.questionId}}</div>
-        <div>{{item.correct}}</div>
+<section class="pixel-finish-container">
+  <div class="pixel-finish-header">
+    <h2 class="pixel-finish-title">Prüfungsergebnis</h2>
+  </div>
+
+  <ul class="pixel-result-list">
+    @for (item of checkedAnswers(); track $index) {
+      <li class="pixel-result-item" [class.correct]="item.correct" [class.incorrect]="!item.correct">
+        <span class="pixel-question-id">Frage {{item.questionId}}:</span>
+        <span class="pixel-status-text">{{item.correct ? 'RICHTIG' : 'FALSCH'}}</span>
       </li>
     }
   </ul>
-  </section>
-<div><button (click)="finishExam()">Finish Exam</button></div>
+
+  <div class="pixel-action-area">
+    <button class="pixel-btn-submit" (click)="finishExam()">
+      Prüfung beenden
+    </button>
+  </div>
+</section>

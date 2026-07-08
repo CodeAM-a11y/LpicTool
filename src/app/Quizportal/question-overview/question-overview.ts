@@ -25,4 +25,5 @@ export class QuestionOverview {
     this.questionsWithAnswers.value().at(this.currentQuestionIndex()),
   );
   protected checkedAnswers=this.#tempDataStore.arrayCorrectOrNot;
+  protected finishExam=signal<boolean>(false);
 }
