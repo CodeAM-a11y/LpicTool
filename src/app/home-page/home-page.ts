@@ -49,6 +49,11 @@ export class HomePage {
   protected readonly exerciseForm=form(this.#exerciseModel,{
     submission:{
       action:async (field)=>{
+        //Speichert die im Form ausgewählten Daten in der Variable
+        this.choosenOptions=field().value();
+        //Sendet die Variable zum TempDatastore
+        this.#tempDataStore.insertExerciseOpts(this.choosenOptions);
+        //TODO zum Übungsmodus routen
 
       }
     }

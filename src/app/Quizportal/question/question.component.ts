@@ -19,20 +19,18 @@ export class question {
   protected answerChecked = effect(() => {
     if (this.question().type === 'fi') {
       //sucht nach einem Element das der eingebenen Antwort entspricht
-      if (
-        this.question().answers.find(
-          (answer) => answer.answerText === this.submittedResult()?.answerText,
-        )
-      ) {
+      if (this.question().answers.find((answer) => answer.answerText === this.submittedResult()?.answerText)) {
         this.#tempDataStore.insertcorrectOrNot({
           questionId: this.question().id,
           correct: true,
         });
       }
-      this.#tempDataStore.insertcorrectOrNot({
-        questionId: this.question().id,
-        correct: false,
-      });
+      else {
+        this.#tempDataStore.insertcorrectOrNot({
+          questionId: this.question().id,
+          correct: false,
+        });
+      }
     } else if (this.question().type === 'sc') {
       if (
         this.submittedResult()?.ids.every(
@@ -44,10 +42,12 @@ export class question {
           correct: true,
         });
       }
-      this.#tempDataStore.insertcorrectOrNot({
-        questionId: this.question().id,
-        correct: false,
-      });
+      else {
+        this.#tempDataStore.insertcorrectOrNot({
+          questionId: this.question().id,
+          correct: false,
+        });
+      }
     }
     //für 'mc'
     else {
@@ -56,16 +56,20 @@ export class question {
         .answers.filter((answer) => answer.isCorrect)
         .map((answer) => answer.id);
       //Geht alle korrekten Ids durch und prüft, ob alle in den eingegebenen Ids vorkommen, ansonsten gibt every false zurück
-      if (correctIds.every((id) => this.submittedResult()?.ids.includes(id))) {
+      if (
+        correctIds.every((id) => this.submittedResult()?.ids.includes(id)) &&
+        this.submittedResult()?.ids.length === correctIds.length
+      ) {
         this.#tempDataStore.insertcorrectOrNot({
           questionId: this.question().id,
           correct: true,
         });
+      } else {
+        this.#tempDataStore.insertcorrectOrNot({
+          questionId: this.question().id,
+          correct: false,
+        });
       }
-      this.#tempDataStore.insertcorrectOrNot({
-        questionId: this.question().id,
-        correct: false,
-      });
     }
   });
 

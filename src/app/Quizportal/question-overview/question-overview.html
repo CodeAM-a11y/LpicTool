@@ -15,11 +15,9 @@
     </button>
   </div>}
 
-  @if (currentQuestionIndex()===120){
     <div class="pixel-finish-section">
       <button class="pixel-btn-submit" (click)="finishExam.set(true)">Prüfung abgeben</button>
       @if (finishExam()===true){
       <app-exam-finish [checkedAnswers]="checkedAnswers"/>}
     </div>
-  }
 </section>
