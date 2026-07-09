@@ -1,1 +1,23 @@
-<p>exercise-mode works!</p>
+<section class="pixel-quiz-section">
+  <div class="pixel-question-wrapper">
+    @if (inputQuestion();as question){
+      <app-exercise-question [question]="question"/>
+    }
+  </div>
+
+  @if (finishExam()===false){
+    <div class="pixel-button-group">
+      <button (click)="currentQuestionIndex.update(value=>value>0?value-1:value)" class="pixel-nav-btn">
+        Zurück
+      </button>
+      <button (click)="currentQuestionIndex.update(value=>value<120?value+1:value)" class="pixel-nav-btn">
+        Weiter
+      </button>
+    </div>}
+
+  <div class="pixel-finish-section">
+    <button class="pixel-btn-submit" (click)="finishExam.set(true)">Prüfung abgeben</button>
+    @if (finishExam()===true){
+      <app-exam-finish [checkedAnswers]="checkedAnswers"/>}
+  </div>
+</section>

@@ -22,7 +22,7 @@ export class QuestionOverview {
 
   protected currentQuestionIndex = signal(0);
   protected inputQuestion = computed(() =>
-    this.questionsWithAnswers.value().at(this.currentQuestionIndex()),
+    this.questionsWithAnswers.value()?.at(this.currentQuestionIndex()),
   );
   protected checkedAnswers=this.#tempDataStore.arrayCorrectOrNot;
   protected finishExam=signal<boolean>(false);

@@ -1,0 +1,78 @@
+<article class="pixel-quiz-container">
+  <header class="pixel-quiz-header">
+    <h2 class="pixel-question-id">Frage: {{question().id}}</h2>
+  </header>
+  <h2 class="pixel-question-text">{{question().questionText}}</h2>
+
+  @switch (question().type){
+    @case ('fi'){
+      <form [formRoot]="answerForm" class="pixel-form">
+
+        <label for="answerText" class="pixel-label">Answer</label>
+        <input type="text" id="answerText"
+               [formField]="answerForm.answerText"
+               class="pixel-input"
+        />
+        <button type="submit" class="pixel-btn-submit">Antwort abgeben</button>
+      </form>
+    }
+    @case ('sc'){
+      <form [formRoot]="answerForm" class="pixel-form">
+        @for (a of question().answers;track (a.id)){
+          <label class="pixel-label-radio">
+            <input type="radio"
+                   name="options"
+                   [checked]="answerState().ids.includes(a.id)"
+                   (change)="updateSingleChoice(a.id)"/>
+            {{a.answerText}}
+          </label>
+        }
+        <button type="submit" class="pixel-btn-submit">Antwort abgeben</button>
+      </form>
+    }
+    @case ('mc'){
+      <form [formRoot]="answerForm" class="pixel-form">
+        @for (a of question().answers;track (a.id)){
+          <label class="pixel-label-checkbox">
+            <input type="checkbox"
+                   [checked]="answerState().ids.includes(a.id)"
+                   (change)="updateMultiChoice(a.id, $event)"/>
+            {{a.answerText}}
+          </label>
+        }
+        <button type="submit" class="pixel-btn-submit">Antwort abgeben</button>
+      </form>
+    }
+  }
+  <button type="button" class="pixel-btn-submit" (click)="showDetail.set(!showDetail())">Antwort anzeigen</button>
+  <h3 class="pixel-question-text mt-8">Deine Antwort ist @if (showCorrectAnswer())
+  {<span class="text-green-800">Richtig</span>}
+  @else {<span class="text-red-800">Falsch</span>}</h3>
+</article>
+@if (showDetail()===true){
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
+
+    <!-- Modal Box -->
+    <article class="pixel-quiz-container relative w-full max-w-lg p-6 bg-white rounded-lg shadow-xl m-4">
+
+
+      <!-- Dein Inhalt -->
+      <h3 class="text-lg font-bold mb-4">Details zur Antwort</h3>
+      <p class="pixel-question-text">Die korrekten Antworten sind:</p>
+      <ul>
+        @for (item of correctAnswers();track item.id){
+          <li class="pixel-question-text">{{item.answerText}}</li>
+        }
+      </ul>
+      <!-- Schließen-Button unten -->
+      <div class="mt-6 flex justify-end">
+        <button type="button"
+                class="pixel-btn-submit"
+                (click)="showDetail.set(false)">
+          Schließen
+        </button>
+      </div>
+
+    </article>
+  </div>
+}

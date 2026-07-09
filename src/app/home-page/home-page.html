@@ -32,4 +32,15 @@
     <button type="submit" class="pixel-btn-submit">Weiter</button>
   </form>
 </div>
+  <div class="pixel-box">
+    <form [formRoot]="listForm" class="pixel-form">
+      <h2 class="pixel-heading">Liste mit Fragen</h2>
+      <select [formField]="listForm.examId" class="pixel-select">
+        <option value="0">Wähle eine Lpic Prüfung</option>
+        <option value="2">Lpic 1</option>
+        <option value="7">Lpic 2</option>
+      </select>
+      <button type="submit" class="pixel-btn-submit">Weiter</button>
+    </form>
+  </div>
 </div>

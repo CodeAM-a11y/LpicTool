@@ -1,35 +1,55 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { TempDataStore } from '../../shared/temp-data-store';
 import { QuestionInter } from '../../shared/question.inter';
 import { GivenAnswerInter } from '../../shared/given-answer.inter';
-import { form, FormField, FormRoot } from '@angular/forms/signals';
-import {TempDataStore} from '../../shared/temp-data-store';
+import { FieldTree, form, FormField, FormRoot } from '@angular/forms/signals';
 
 @Component({
-  selector: 'app-question',
+  selector: 'app-exercise-question',
   imports: [FormField, FormRoot],
-  templateUrl: './question.component.html',
-  styleUrl: './question.component.css',
+  templateUrl: './exercise-question.html',
+  styleUrl: './exercise-question.css',
 })
-export class question {
+export class ExerciseQuestion {
   #tempDataStore = inject(TempDataStore);
   question = input.required<QuestionInter>();
   protected submittedResult = signal<GivenAnswerInter | null>(null);
+  //Boolen um Detail Seite anzeigen zu lassen
+  protected showDetail = signal<boolean>(false);
+  //Boolean um direkt anzuzeigen ob Antwort falsch oder korrekt.
+  protected showCorrectAnswer = signal<boolean>(false);
+  //Variable um korrekte Antworten anzeigen zu lassen
+  protected correctAnswers = computed(() => {
+    //Vorsicht SQLite gibt 1 zurück statt true
+    const answers = this.question().answers.filter((ans) => ans.isCorrect);
+    //Korrekte Antworten filtern
+    return answers;
+  });
   //Um zu prüfen ob Antwort bereits abgegeben wurde
   //Computed Funktion die automatisch ausgelöst wird wenn Antwort eingeben wird, ermittelt ob Antwort korrekt ist
   protected answerChecked = effect(() => {
-
-    const result = this.submittedResult();
-    if (!result) return;
-
+    if(this.submittedResult()===null){
+      this.showCorrectAnswer.set(false);
+      this.#tempDataStore.insertcorrectOrNot({
+        questionId: this.question().id,
+        correct: false,
+      });
+      return;
+    }
     if (this.question().type === 'fi') {
       //sucht nach einem Element das der eingebenen Antwort entspricht
-      if (this.question().answers.find((answer) => answer.answerText === this.submittedResult()?.answerText)) {
+      if (
+        this.question().answers.find(
+          (answer) => answer.answerText === this.submittedResult()?.answerText,
+        )
+      ) {
+        this.showCorrectAnswer.set(true);
         this.#tempDataStore.insertcorrectOrNot({
           questionId: this.question().id,
           correct: true,
         });
-      }
-      else {
+      } else {
+        this.showCorrectAnswer.set(false);
         this.#tempDataStore.insertcorrectOrNot({
           questionId: this.question().id,
           correct: false,
@@ -37,6 +57,7 @@ export class question {
       }
     } else if (this.question().type === 'sc') {
       if ((this.submittedResult()?.ids.length??0)>0===false){
+        this.showCorrectAnswer.set(false);
         this.#tempDataStore.insertcorrectOrNot({
           questionId: this.question().id,
           correct: false,
@@ -44,15 +65,16 @@ export class question {
       }
       else if (
         this.submittedResult()?.ids.every(
-          (id) => this.question().answers.find((answer) => answer.id === id)?.isCorrect,
+          id => this.question().answers.find((answer) => answer.id === id)
         )
       ) {
+        this.showCorrectAnswer.set(true);
         this.#tempDataStore.insertcorrectOrNot({
           questionId: this.question().id,
           correct: true,
         });
-      }
-      else {
+      } else {
+        this.showCorrectAnswer.set(false);
         this.#tempDataStore.insertcorrectOrNot({
           questionId: this.question().id,
           correct: false,
@@ -70,11 +92,13 @@ export class question {
         correctIds.every((id) => this.submittedResult()?.ids.includes(id)) &&
         this.submittedResult()?.ids.length === correctIds.length
       ) {
+        this.showCorrectAnswer.set(true);
         this.#tempDataStore.insertcorrectOrNot({
           questionId: this.question().id,
           correct: true,
         });
       } else {
+        this.showCorrectAnswer.set(false);
         this.#tempDataStore.insertcorrectOrNot({
           questionId: this.question().id,
           correct: false,
@@ -106,7 +130,8 @@ export class question {
     });
   }
 
-  protected readonly answerForm = form(this.answerState, {
+  protected readonly answerForm = form(this.answerState,
+    {
     submission: {
       action: async (field) => {
         const formValue = field().value();
@@ -155,4 +180,5 @@ export class question {
       return { ...s, ids };
     });
   }
+  //KI generiert Ende
 }
