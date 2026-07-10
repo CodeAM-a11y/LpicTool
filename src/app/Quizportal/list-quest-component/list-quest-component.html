@@ -1,0 +1,17 @@
+<button class="pixel-btn" (click)="buttonShow.set(!buttonShow())">Frage: {{question().id}} {{ buttonShow() ? '▲' : '▼' }}</button>
+@if (buttonShow()) {
+  <div class="pixel-question-wrapper">Frage: {{question().questionText}}</div>
+  <div class="pixel-answer-wrapper">
+    <ul class="pixel-result-list">
+      <li class="pixel-label">Antworten</li>
+      @for (answer of question().answers;track answer.id){
+        <li class="pixel-result-item">{{answer.answerText}}@if (answer.isCorrect) {
+          <span class="pixel-badge pixel-badge-correct">  Richtig</span>
+        } @else {
+          <span class="pixel-badge pixel-badge-incorrect">  Falsch</span>
+        }
+        </li>
+      }
+    </ul>
+  </div>
+}

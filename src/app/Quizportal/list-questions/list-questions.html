@@ -1,1 +1,12 @@
-<p>list-questions works!</p>
+<div class="pixel-quiz-container">
+  <div class="pixel-quiz-header">
+    <p class="pixel-status">Fragen Übersicht</p>
+  </div>
+  <div class="pixel-compact-list">
+    @for (question of questionsWithAnswers.value(); track question.id) {
+      <div class="pixel-item-wrapper">
+        <app-list-quest-component [question]="question"/>
+      </div>
+    }
+  </div>
+</div>

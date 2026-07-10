@@ -65,7 +65,7 @@ export class ExerciseQuestion {
       }
       else if (
         this.submittedResult()?.ids.every(
-          id => this.question().answers.find((answer) => answer.id === id)
+          id => this.question().answers.find((answer) => answer.id === id)?.isCorrect
         )
       ) {
         this.showCorrectAnswer.set(true);

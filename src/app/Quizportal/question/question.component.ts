@@ -44,7 +44,7 @@ export class question {
       }
       else if (
         this.submittedResult()?.ids.every(
-          (id) => this.question().answers.find((answer) => answer.id === id)?.isCorrect,
+          (id) => this.question().answers.find((answer) => answer.id === id)?.isCorrect
         )
       ) {
         this.#tempDataStore.insertcorrectOrNot({

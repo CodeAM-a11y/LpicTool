@@ -40,6 +40,7 @@ export class HomePage {
   //Die Form für die Liste mit Fragen
   protected readonly listForm = form(this.#choosenExam, {
     submission: {
+      //Nach submission wird examid befüllt mit der ausgewählten Prüfung und zu listquestions geroutet
       action: async (field) => {
         //Speichert die im Signal ausgewählten Daten in der Variable ab
         this.choosenExamInter = field().value();
