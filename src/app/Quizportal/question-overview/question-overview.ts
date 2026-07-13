@@ -24,6 +24,11 @@ export class QuestionOverview {
   protected inputQuestion = computed(() =>
     this.questionsWithAnswers.value()?.at(this.currentQuestionIndex()),
   );
-  protected checkedAnswers=this.#tempDataStore.arrayCorrectOrNot;
-  protected finishExam=signal<boolean>(false);
+  protected checkedAnswers = this.#tempDataStore.arrayCorrectOrNot;
+  protected finishExam = signal<boolean>(false);
+
+  //nach beenden des Exams wird die Liste der Antworten gelöscht
+  ngOnDestroy() {
+    this.#tempDataStore.clearArrayCorrectOrNot();
+  }
 }

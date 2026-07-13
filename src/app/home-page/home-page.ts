@@ -69,7 +69,7 @@ export class HomePage {
         this.choosenOptions = field().value();
         //Sendet die Variable zum TempDatastore
         this.#tempDataStore.insertExerciseOpts(this.choosenOptions);
-        //TODO zum Übungsmodus routen
+        //Übungsmodus routen
         await this.#router.navigate(['/Quizportal/Exercise']);
       },
     },

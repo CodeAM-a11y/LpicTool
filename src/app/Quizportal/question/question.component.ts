@@ -17,7 +17,13 @@ export class question {
   //Um zu prüfen ob Antwort bereits abgegeben wurde
   //Computed Funktion die automatisch ausgelöst wird wenn Antwort eingeben wird, ermittelt ob Antwort korrekt ist
   protected answerChecked = effect(() => {
-
+    if (this.submittedResult() === null) {
+      this.#tempDataStore.insertcorrectOrNot({
+        questionId: this.question().id,
+        correct: false,
+      });
+      return;
+    }
     const result = this.submittedResult();
     if (!result) return;
 

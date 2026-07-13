@@ -3,6 +3,8 @@ import { TempDataStore } from '../../shared/temp-data-store';
 import { QuestionInter } from '../../shared/question.inter';
 import { GivenAnswerInter } from '../../shared/given-answer.inter';
 import { FieldTree, form, FormField, FormRoot } from '@angular/forms/signals';
+import {shuffleArray} from '../../shared/functions';
+import { AnswerInter } from '../../shared/answer.inter';
 
 @Component({
   selector: 'app-exercise-question',
@@ -25,10 +27,22 @@ export class ExerciseQuestion {
     //Korrekte Antworten filtern
     return answers;
   });
+  protected answersMixed:boolean=false;
+  //Antworten mischen falls in Constructor boolean mit true eingegeben wird
+  protected answersMixedArray=computed(()=>{
+    if (this.answersMixed){
+    return shuffleArray(this.question().answers);
+    }
+    else {
+      return this.question().answers;
+    }
+  });
+  //Antworten mischen
   //Um zu prüfen ob Antwort bereits abgegeben wurde
   //Computed Funktion die automatisch ausgelöst wird wenn Antwort eingeben wird, ermittelt ob Antwort korrekt ist
   protected answerChecked = effect(() => {
-    if(this.submittedResult()===null){
+    //Falls keine Anwort eingegeben wurde auf Falsch setzen und zu Array senden
+    if (this.submittedResult() === null) {
       this.showCorrectAnswer.set(false);
       this.#tempDataStore.insertcorrectOrNot({
         questionId: this.question().id,
@@ -56,16 +70,15 @@ export class ExerciseQuestion {
         });
       }
     } else if (this.question().type === 'sc') {
-      if ((this.submittedResult()?.ids.length??0)>0===false){
+      if ((this.submittedResult()?.ids.length ?? 0) > 0 === false) {
         this.showCorrectAnswer.set(false);
         this.#tempDataStore.insertcorrectOrNot({
           questionId: this.question().id,
           correct: false,
         });
-      }
-      else if (
+      } else if (
         this.submittedResult()?.ids.every(
-          id => this.question().answers.find((answer) => answer.id === id)?.isCorrect
+          (id) => this.question().answers.find((answer) => answer.id === id)?.isCorrect,
         )
       ) {
         this.showCorrectAnswer.set(true);
@@ -128,10 +141,11 @@ export class ExerciseQuestion {
       // Reset des Status bei einem Fragenwechsel
       this.submittedResult.set(null);
     });
+    //Antworten mischen falls in signal form angehackt wurde
+    this.answersMixed = this.#tempDataStore.exerciseOptions.answersShuffled;
   }
 
-  protected readonly answerForm = form(this.answerState,
-    {
+  protected readonly answerForm = form(this.answerState, {
     submission: {
       action: async (field) => {
         const formValue = field().value();
@@ -181,4 +195,5 @@ export class ExerciseQuestion {
     });
   }
   //KI generiert Ende
+  protected readonly shuffleArray = shuffleArray;
 }

@@ -18,7 +18,7 @@
     }
     @case ('sc'){
       <form [formRoot]="answerForm" class="pixel-form">
-        @for (a of question().answers;track (a.id)){
+        @for (a of answersMixedArray();track (a.id)){
           <label class="pixel-label-radio">
             <input type="radio"
                    name="options"
@@ -32,7 +32,7 @@
     }
     @case ('mc'){
       <form [formRoot]="answerForm" class="pixel-form">
-        @for (a of question().answers;track (a.id)){
+        @for (a of answersMixedArray();track (a.id)){
           <label class="pixel-label-checkbox">
             <input type="checkbox"
                    [checked]="answerState().ids.includes(a.id)"

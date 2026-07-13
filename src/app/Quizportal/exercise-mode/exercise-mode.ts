@@ -43,4 +43,9 @@ export class ExerciseMode {
   );
   protected checkedAnswers = this.#tempDataStore.arrayCorrectOrNot;
   protected finishExam = signal<boolean>(false);
+
+  //Nach beenden des Exams wird die Liste der Antworten gelöscht
+  ngOnDestroy() {
+    this.#tempDataStore.clearArrayCorrectOrNot();
+  }
 }
